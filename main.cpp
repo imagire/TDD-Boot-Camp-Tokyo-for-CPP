@@ -22,14 +22,15 @@ extern bool checkTrainRoute(STATION station1, STATION station2, STATIONS * visit
 
 TEST(checkTrainRouteTest, Test1)
 {
+	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,TOKYO));
+	EXPECT_TRUE(checkTrainRoute(TOKYO,YOKOHAMA));
+	EXPECT_TRUE(checkTrainRoute(TOKYO,OMIYA));
+	EXPECT_TRUE(checkTrainRoute(OMIYA,TOKYO));
+
 	EXPECT_TRUE(checkTrainRoute(OMIYA,YOKOHAMA));
 	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,OMIYA));
 
-	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,TOKYO));
-	EXPECT_TRUE(checkTrainRoute(TOKYO,YOKOHAMA));
 
-	EXPECT_TRUE(checkTrainRoute(TOKYO,OMIYA));
-	EXPECT_TRUE(checkTrainRoute(OMIYA,TOKYO));
 }
 
 TEST(checkTrainRouteTest, Test2)
@@ -82,6 +83,7 @@ void InitializeMap()
 	gStationMap.insert(getPair(YOKOHAMA));
 	gStationMap.insert(getPair(OMIYA));
 	gStationMap.insert(getPair(OSHIMA));
+	gStationMap.insert(getPair(TOKYO));
 }
 
 bool checkTrainRoute(STATION station1, STATION station2)
@@ -92,11 +94,29 @@ bool checkTrainRoute(STATION station1, STATION station2)
 
 bool checkTrainRoute(STATION station1, STATION station2, STATIONS * visitedStations)
 {
+	if(station1 == station2)
+	{
+		return false;
+	}
+
+	if(std::find(visitedStations->begin(), visitedStations->end(), station1)
+		!= visitedStations->end())
+	{
+		return false;
+	}
 	STATIONS stations = gStationMap[station1];
 	if(std::find(stations.begin(), stations.end(), station2)
 		!= stations.end())
 	{
 		return true;
+	}
+	visitedStations->push_back(station1);
+	for (STATIONS::iterator it= stations.begin();it != stations.end(); it++)
+	{
+		if (checkTrainRoute(*it, station2, visitedStations))
+		{
+			return true;
+		}
 	}
 
 	return false;
