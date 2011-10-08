@@ -29,7 +29,7 @@ TEST(SubTest, Test4)
 {
     EXPECT_EQ(-1, sub(2, 3));
 }
-	enum {OOMIYA=0, YOKOHAMA, OOSHIMA};
+	enum {OOMIYA=0, YOKOHAMA, OOSHIMA, TOKYO};
 class Train {
 
 
@@ -37,8 +37,11 @@ public:
 	Train () {};
 	bool able(int from, int to) {
 		bool result = false;
-		if (from == YOKOHAMA && to == OOSHIMA) result = false;
-		else if (from == OOMIYA && to == YOKOHAMA) result = true;
+		//if (from == YOKOHAMA && to == OOSHIMA) result = false;
+
+		if ((from == OOMIYA && to == YOKOHAMA) 
+		||(from == YOKOHAMA && to == TOKYO)
+		||(from == TOKYO && to == OOMIYA)) result = true;
 		return result;
 	}
 };
@@ -49,6 +52,14 @@ TEST(TrainTest, Test1)
 
 	EXPECT_TRUE(train.able(OOMIYA, YOKOHAMA));
 	EXPECT_FALSE(train.able(YOKOHAMA, OOSHIMA));
+}
+
+TEST(TrainTest, Test2)
+{
+	Train train;
+
+	EXPECT_TRUE(train.able(YOKOHAMA, TOKYO));
+	EXPECT_TRUE(train.able(TOKYO, OOMIYA));
 }
 
 
