@@ -40,6 +40,11 @@ StationInformation createStationInformation(const Station first, const Station s
 	return data;
 }
 
+std::list<Station> calculateMinimumRoute(const Station source, const Station destination)
+{
+
+	return std::list<Station>();
+}
 
 bool canGo(const Station source, const Station destination, int& time, int translationCount = 0)
 {
@@ -168,6 +173,25 @@ TEST(canGoTest, testOutputTime)
 	EXPECT_EQ(time, 115);
 	EXPECT_TRUE(canGo(Minamiurawa, Ohmiya, time)); // 12
 	EXPECT_EQ(time, 127);
+}
+
+TEST(calculate, testCalc)
+{
+	std::list<Station> result;
+	result = calculateMinimumRoute(Yokohama, Kawasaki);
+	std::list<Station> expectedResult;
+	expectedResult.push_back(Yokohama);
+	expectedResult.push_back(Kawasaki);
+	EXPECT_TRUE(!result.empty());
+	EXPECT_EQ(result, expectedResult);
+
+	result = calculateMinimumRoute(Yokohama, Shibuya);
+	expectedResult.clear();
+	expectedResult.push_back(Yokohama);
+	expectedResult.push_back(MusashiKosugi);
+	expectedResult.push_back(Shibuya);
+	EXPECT_TRUE(!result.empty());
+	EXPECT_EQ(result, expectedResult);
 }
 
 int main(int argc, char* argv[])
