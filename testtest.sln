@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testtest", "testtest.vcxproj", "{4092D39A-3D12-4367-3644-706A703CEB37}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testtest", "testtest.vcxproj", "{CD2685C4-ECEA-BD21-85C4-3B53EE7B6B84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4092D39A-3D12-4367-3644-706A703CEB37}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4092D39A-3D12-4367-3644-706A703CEB37}.Debug|Win32.Build.0 = Debug|Win32
-		{4092D39A-3D12-4367-3644-706A703CEB37}.Release|Win32.ActiveCfg = Release|Win32
-		{4092D39A-3D12-4367-3644-706A703CEB37}.Release|Win32.Build.0 = Release|Win32
+		{CD2685C4-ECEA-BD21-85C4-3B53EE7B6B84}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD2685C4-ECEA-BD21-85C4-3B53EE7B6B84}.Debug|Win32.Build.0 = Debug|Win32
+		{CD2685C4-ECEA-BD21-85C4-3B53EE7B6B84}.Release|Win32.ActiveCfg = Release|Win32
+		{CD2685C4-ECEA-BD21-85C4-3B53EE7B6B84}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
