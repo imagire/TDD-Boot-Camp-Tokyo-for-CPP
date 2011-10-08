@@ -7,7 +7,8 @@
 typedef enum {
 	OMIYA,
 	YOKOHAMA,
-	OSHIMA
+	OSHIMA,
+	TOKYO
 } STATION;
 
 typedef std::vector<STATION> STATIONS;
@@ -15,12 +16,20 @@ typedef std::map<STATION, STATIONS> STATION_MAP;
 STATION_MAP gStationMap;
 
 extern void InitializeMap();
+
 extern bool checkTrainRoute(STATION station1, STATION station2);
+extern bool checkTrainRoute(STATION station1, STATION station2, STATIONS * visitedStations);
 
 TEST(checkTrainRouteTest, Test1)
 {
 	EXPECT_TRUE(checkTrainRoute(OMIYA,YOKOHAMA));
 	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,OMIYA));
+
+	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,TOKYO));
+	EXPECT_TRUE(checkTrainRoute(TOKYO,YOKOHAMA));
+
+	EXPECT_TRUE(checkTrainRoute(TOKYO,OMIYA));
+	EXPECT_TRUE(checkTrainRoute(OMIYA,TOKYO));
 }
 
 TEST(checkTrainRouteTest, Test2)
@@ -51,12 +60,16 @@ std::pair<STATION, STATIONS> getPair(STATION st)
 	switch(st)
 	{
 	case YOKOHAMA :
-		neighbors.push_back(OMIYA);
+		neighbors.push_back(TOKYO);
 		break;
 	case OMIYA :
-		neighbors.push_back(YOKOHAMA);
+		neighbors.push_back(TOKYO);
 		break;
 	case OSHIMA :
+		break;
+	case TOKYO :
+		neighbors.push_back(YOKOHAMA);
+		neighbors.push_back(OMIYA);
 		break;
 	default :
 		break;
@@ -72,6 +85,12 @@ void InitializeMap()
 }
 
 bool checkTrainRoute(STATION station1, STATION station2)
+{
+	STATIONS stations;
+	return checkTrainRoute(station1, station2, &stations);
+}
+
+bool checkTrainRoute(STATION station1, STATION station2, STATIONS * visitedStations)
 {
 	STATIONS stations = gStationMap[station1];
 	if(std::find(stations.begin(), stations.end(), station2)
