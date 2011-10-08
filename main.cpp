@@ -1,14 +1,21 @@
 #include <gtest/gtest.h>
 #include "path.h"
 
-TEST(PathTest, IsArrivalTestFromOomiyaToYokohama)
-{
+class PathTest : public ::testing::Test {
+protected:
+	virtual void SetUp()
+	{
+		path.AddReach("‘å‹{", "“Œ‹ž");
+		path.AddReach("“Œ‹ž", "‰¡•l");
+	}
+
 	Path path;
+};
+
+TEST_F(PathTest, IsArrivalTestFromOomiyaToYokohama)
+{
 	Path::Root expected_root;
 	Path::Root result;
-
-	path.AddReach("‘å‹{", "“Œ‹ž");
-	path.AddReach("“Œ‹ž", "‰¡•l");
 
 	EXPECT_EQ(true, path.IsArrival("‘å‹{", "‰¡•l", result));
 
@@ -20,14 +27,10 @@ TEST(PathTest, IsArrivalTestFromOomiyaToYokohama)
 
 }
 
-TEST(PathTest, IsArrivalTestFromYokohamaToOomiya)
+TEST_F(PathTest, IsArrivalTestFromYokohamaToOomiya)
 {
-	Path path;
 	Path::Root expected_root;
 	Path::Root result;
-
-	path.AddReach("‘å‹{", "“Œ‹ž");
-	path.AddReach("“Œ‹ž", "‰¡•l");
 
 	EXPECT_EQ(true, path.IsArrival("‰¡•l", "‘å‹{", result));
 
@@ -38,14 +41,11 @@ TEST(PathTest, IsArrivalTestFromYokohamaToOomiya)
 	EXPECT_EQ(expected_root, result);
 }
 
-TEST(PathTest, IsArrivalTestFromYokohamaToTokyo)
+TEST_F(PathTest, IsArrivalTestFromYokohamaToTokyo)
 {
-	Path path;
 	Path::Root expected_root;
 	Path::Root result;
 
-	path.AddReach("‘å‹{", "“Œ‹ž");
-	path.AddReach("“Œ‹ž", "‰¡•l");
 
 	EXPECT_EQ(true, path.IsArrival("‰¡•l", "“Œ‹ž", result));
 
@@ -55,50 +55,15 @@ TEST(PathTest, IsArrivalTestFromYokohamaToTokyo)
 	EXPECT_EQ(expected_root, result);
 }
 
-#if 0
-enum BASYO {
-	OOMIYA = 0,
-	YOKOHAMA,
-	OOSIMA,
-	TOKYO
-};
-BASYO ikeru[][2] = {
-	{OOMIYA,YOKOHAMA},
-	{YOKOHAMA, OOMIYA},
-	{TOKYO, YOKOHAMA},
-	{YOKOHAMA, TOKYO},
-	{TOKYO, OOMIYA},
-	{OOMIYA, TOKYO}
-};
-
-bool IsToutyaku(enum BASYO start, enum BASYO end)
+TEST_F(PathTest, IsArrivalTestFromYokohamaToOoshima)
 {
-	bool ret=false;
-	for(int i = 0; i < sizeof(ikeru)/sizeof(ikeru[0]) ; ++i){
-		if (start == ikeru[i][0] && end == ikeru[i][1]) {
-			ret = true;
-			break;
-		}
-	}
-	return ret;
+	Path::Root expected_root;
+	Path::Root result;
+
+	EXPECT_EQ(false, path.IsArrival("‰¡•l", "‘å“‡", result));
 }
 
-TEST(Work1, Test1)
-{
-	EXPECT_EQ(true, IsToutyaku(OOMIYA, YOKOHAMA));
-	EXPECT_EQ(true, IsToutyaku(YOKOHAMA, OOMIYA));
-	EXPECT_EQ(false, IsToutyaku(OOSIMA, YOKOHAMA));
-	EXPECT_EQ(false, IsToutyaku(YOKOHAMA, OOSIMA));
-}
 
-TEST(Work2, Test1)
-{
-	EXPECT_EQ(true, IsToutyaku(YOKOHAMA, TOKYO));
-	EXPECT_EQ(true, IsToutyaku(TOKYO, YOKOHAMA));
-	EXPECT_EQ(true, IsToutyaku(OOMIYA, TOKYO));
-	EXPECT_EQ(true, IsToutyaku(TOKYO, OOMIYA));
-}
-#endif
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
