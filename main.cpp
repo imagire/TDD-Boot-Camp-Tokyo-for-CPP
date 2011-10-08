@@ -12,35 +12,104 @@ int sub(int x, int y)
 }
 */
 
-struct Pair
+enum DIRECTION
 {
-	char* src;
-	char* dst;
+	DIR_BOTH,
+	DIR_FWD,
+	DIR_REV
 };
 
-Pair arPair = 
+enum WAY
 {
-	"大宮", "横浜"
+	WAY_ALL,
+	WAY_TRAIN,
+	WAY_MAX
 };
 
-bool CanGo( char* src, char* dst, char* way )
+struct Place
 {
-	if ( strcmp( arPair.src, src ) == 0 )
+	char*	name;
+	int		id;
+};
+struct Link
+{
+	int	srcid;
+	int dstid;
+	WAY way;
+	DIRECTION direction;
+};
+
+
+
+
+const char* WayList[] = { "All", "電車" };
+// 条件：src < dst 
+const Place PlaceList[] = {{"横浜",1},{"東京",2},{"大宮",3},{"大島",4}};
+const Link	LinkList[] = {
+							{1, 2, WAY_TRAIN, DIR_BOTH},
+							{2, 3, WAY_TRAIN, DIR_BOTH} 
+						 };
+
+int SearchID( char* place )
+{
+	for( int i = 0; i< sizeof( PlaceList ); i++ )
 	{
-		if ( strcmp( arPair.dst, dst ) == 0 )
+		if( strcmp(PlaceList[i].name, place ) == 0 )
 		{
-			return true;
+			return PlaceList[i].id;
 		}
 	}
-	else if ( strcmp( arPair.src, dst ) == 0 )
+	return -1;
+}
+
+// Linkインデックスを返す
+bool IsLinked( int src, int dst )
+{
+	if( src > dst )
 	{
-		if ( strcmp( arPair.dst, src ) == 0 )
+		int temp = src;
+		src = dst;
+		dst = temp;
+	}
+
+	for( int i = 0; i < sizeof( LinkList ); i++ )
+	{
+		// 直接つながっているケース
+		if( LinkList[ i ].srcid == src )
 		{
-			return true;
+			if( LinkList[ i ].dstid == dst )
+			{
+				return true;
+			}
 		}
 	}
 
+	// 間接的につながってるケース（再帰）
+	for( int i = 0; i < sizeof( LinkList ); i++ )
+	{
+		// 直接つながっているケース
+		if( LinkList[ i ].srcid == src )
+		{
+			int iNewSrc = LinkList[ i ].dstid;
+			if( IsLinked( iNewSrc, dst ) )
+			{
+				return true;
+			}
+		}
+	}
 	return false;
+}
+
+bool CanGo( char* src, char* dst, char* way = "All" )
+{
+	// ID検索
+	int iSrcId = SearchID( src );
+	if( iSrcId == -1 ) return false;
+	int iDstId = SearchID( dst );
+	if( iDstId == -1 ) return false;
+
+	// リンクリスト検索
+	return IsLinked( iSrcId, iDstId );
 }
 
 TEST( TDDBC, Project1 )
@@ -52,6 +121,18 @@ TEST( TDDBC, Project1 )
 	EXPECT_EQ( false, CanGo( "大島", "横浜", "電車" ));
 	EXPECT_EQ( false, CanGo( "横浜", "大島", "電車" ));
 }
+
+TEST( TDDBC, Project2 )
+{
+	// 横浜⇔東京にいける(どんな手段でも)
+	EXPECT_EQ( true, CanGo( "横浜", "東京" ));
+	EXPECT_EQ( true, CanGo( "東京", "横浜" ));
+	// 東京⇔大宮にいける(どんな手段でも)
+	EXPECT_EQ( true, CanGo( "東京", "大宮" ));
+	EXPECT_EQ( true, CanGo( "大宮", "東京" ));
+}
+
+
 /*
 TEST(AddTest, Test1)
 {
