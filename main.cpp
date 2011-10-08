@@ -41,8 +41,13 @@ StationInformation createStationInformation(const Station first, const Station s
 }
 
 
-bool canGo(const Station source, const Station destination, int translationCount, int& time)
+bool canGo(const Station source, const Station destination, int& time, int translationCount = 0)
 {
+	if (translationCount > MAXIMUM_TRANSRATION)
+	{
+		return false;
+	}
+
 	static std::vector<StationInformation> connectionAdminission;
 	if (connectionAdminission.empty())
 	{
@@ -77,11 +82,8 @@ bool canGo(const Station source, const Station destination, int translationCount
 			if (destination == connectionAdminission.at(i).second)
 			{
 				time += connectionAdminission.at(i).time;
+				std::cout << destination;
 				return true;
-			}
-			else if (translationCount > MAXIMUM_TRANSRATION)
-			{
-				return false;
 			}
 			else
 			{
@@ -93,11 +95,8 @@ bool canGo(const Station source, const Station destination, int translationCount
 			if (destination == connectionAdminission.at(i).first)
 			{
 				time += connectionAdminission.at(i).time;
+				std::cout << destination;
 				return true;
-			}
-			else if (translationCount > MAXIMUM_TRANSRATION)
-			{
-				return false;
 			}
 			else
 			{
@@ -111,7 +110,7 @@ bool canGo(const Station source, const Station destination, int translationCount
 	{
 		for (unsigned int i = 0; i < recursiveList.size() ; ++i)
 		{
-			if (true == canGo(recursiveList.at(i), destination, ++translationCount, time))
+			if (true == canGo(recursiveList.at(i), destination, time, ++translationCount))
 			{
 				returnCode = true;
 			}
@@ -124,50 +123,50 @@ bool canGo(const Station source, const Station destination, int translationCount
 TEST(canGoTest, TestMain)
 {
 	int time = 0;
-	EXPECT_TRUE(canGo(Ohmiya, Yokohama, 0, time));
-	EXPECT_TRUE(canGo(Yokohama, Tokyo, 0, time));
-	EXPECT_TRUE(canGo(Tokyo, Yokohama, 0, time));
-	EXPECT_TRUE(canGo(Tokyo, Ohmiya, 0, time));
-	EXPECT_TRUE(canGo(Ohmiya, Tokyo, 0, time));
+	EXPECT_TRUE(canGo(Ohmiya, Yokohama, time));
+	EXPECT_TRUE(canGo(Yokohama, Tokyo, time));
+	EXPECT_TRUE(canGo(Tokyo, Yokohama, time));
+	EXPECT_TRUE(canGo(Tokyo, Ohmiya, time));
+	EXPECT_TRUE(canGo(Ohmiya, Tokyo, time));
 
-	EXPECT_FALSE(canGo(Yokohama, Ohshima, 0, time));
+	EXPECT_FALSE(canGo(Yokohama, Ohshima, time));
 }
 
 TEST(canGoTest, ManyStation)
 {
 	int time = 0;
-	EXPECT_TRUE(canGo(Ohmiya, Yokohama, 0, time));
-	EXPECT_TRUE(canGo(Yokohama, Shinjuku, 0, time));
-	EXPECT_TRUE(canGo(Yokohama, Ohmiya, 0, time));
-	EXPECT_TRUE(canGo(MusashiKosugi, Ikebukuro, 0, time));
-	EXPECT_TRUE(canGo(Kawasaki, Akabane, 0, time));
+	EXPECT_TRUE(canGo(Ohmiya, Yokohama, time));
+	EXPECT_TRUE(canGo(Yokohama, Shinjuku, time));
+	EXPECT_TRUE(canGo(Yokohama, Ohmiya, time));
+	EXPECT_TRUE(canGo(MusashiKosugi, Ikebukuro, time));
+	EXPECT_TRUE(canGo(Kawasaki, Akabane, time));
 }
 
 TEST(canGoTest, testOutputTime)
 {
 	int time = 0;
-	EXPECT_TRUE(canGo(Yokohama, Kawasaki, 0, time));
+	EXPECT_TRUE(canGo(Yokohama, Kawasaki, time));
 	EXPECT_EQ(time, 14);
 
 	time = 0;
-	EXPECT_TRUE(canGo(Yokohama, Kawasaki, 0, time));
-	EXPECT_TRUE(canGo(Kawasaki, Tokyo, 0, time));
+	EXPECT_TRUE(canGo(Yokohama, Kawasaki, time));
+	EXPECT_TRUE(canGo(Kawasaki, Tokyo, time));
 	EXPECT_EQ(time, 38);
 
 	time = 0;
-	EXPECT_TRUE(canGo(Yokohama, Kawasaki, 0, time)); // 14
-	EXPECT_TRUE(canGo(Kawasaki, Tokyo, 0, time));  // 24
-	EXPECT_TRUE(canGo(Tokyo, Shibuya, 0, time)); // 25
+	EXPECT_TRUE(canGo(Yokohama, Kawasaki, time)); // 14
+	EXPECT_TRUE(canGo(Kawasaki, Tokyo, time));  // 24
+	EXPECT_TRUE(canGo(Tokyo, Shibuya, time)); // 25
 	EXPECT_EQ(time, 63);
-	EXPECT_TRUE(canGo(Shibuya, Shinjuku, 0, time)); // 10
+	EXPECT_TRUE(canGo(Shibuya, Shinjuku, time)); // 10
 	EXPECT_EQ(time, 73);
-	EXPECT_TRUE(canGo(Shinjuku, Ikebukuro, 0, time)); // 11
+	EXPECT_TRUE(canGo(Shinjuku, Ikebukuro, time)); // 11
 	EXPECT_EQ(time, 84);
-	EXPECT_TRUE(canGo(Ikebukuro, Akabane, 0, time));  // 15
+	EXPECT_TRUE(canGo(Ikebukuro, Akabane, time));  // 15
 	EXPECT_EQ(time, 99);
-	EXPECT_TRUE(canGo(Akabane, Minamiurawa, 0, time)); // 16
+	EXPECT_TRUE(canGo(Akabane, Minamiurawa, time)); // 16
 	EXPECT_EQ(time, 115);
-	EXPECT_TRUE(canGo(Minamiurawa, Ohmiya, 0, time)); // 12
+	EXPECT_TRUE(canGo(Minamiurawa, Ohmiya, time)); // 12
 	EXPECT_EQ(time, 127);
 }
 
