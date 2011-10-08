@@ -16,32 +16,28 @@ struct RootSet
   RootSet(Station _tar, Station _dist): tar(_tar), dist(_dist) {};
 };
 
+
+// âwÇÃòHê¸ê}
+Station stationRoot[] = {yokohama, tokyo, oomiya};
+
+
 bool canGo(RootSet set)
 {
-  bool ret = false;
+  int size = sizeof(stationRoot) / sizeof(stationRoot[0]);
 
-  if(yokohama == set.tar)
+  for(int i = 0; i < size; ++i)
   {
-    if(oomiya == set.dist
-      || tokyo == set.dist)
-      ret = true;
-  }
-  else if(tokyo == set.tar)
-  {
-    if(yokohama == set.dist || oomiya == set.dist)
+    if(set.tar == stationRoot[i])
     {
-      return true;
-    }
-  }
-  else if(oomiya == set.tar)
-  {
-    if(tokyo == set.dist)
-    {
-      return true;
+      for(int j = 0; j < size; ++j)
+      {
+        if(set.dist == stationRoot[j])
+          return true;
+      }
     }
   }
 
-  return ret;
+  return false;
 }
 
 /*
