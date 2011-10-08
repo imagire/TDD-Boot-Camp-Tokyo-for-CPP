@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -7,7 +8,7 @@ namespace st
 {
 	enum Station
 	{
-		Yokohama,
+		Yokohama=0,
 		Kawasaki,
 		MusashiKosugi,
 		Tokyo,
@@ -22,6 +23,7 @@ namespace st
 		MinamiUrawa,
 		Ohshima,
 		Ohmiya,
+		StationEnd
 	};
 }
 
@@ -174,6 +176,77 @@ bool get_eta(st::Station station1, st::Station station2 ,int *reach_time, int st
 	return false;
 }
 
+void get_weight(st::Station station1, st::Station station2 ,int *weight,int time=0)
+{
+	for(int n=0;n<Elements(good_paths);n++)
+	{
+		// 乗り換え出来るか調べる。
+		st::Station tonari=st::StationEnd;
+		if(good_paths[n].st1 == station1 )
+		{
+			tonari=good_paths[n].st2;
+		}
+		if(good_paths[n].st2 == station1 )
+		{
+			tonari=good_paths[n].st1;
+		}
+
+		if(st::StationEnd != tonari)
+		{
+			if(weight[tonari] > time + good_paths[n].time)
+			{
+				weight[tonari]=time + good_paths[n].time;
+				get_weight(tonari,station2,weight,time + good_paths[n].time);
+			}
+		}
+	}
+}
+
+bool weight_to_route(st::Station station1, st::Station station2 ,int *weight,vector<st::Station> &route, int now_time=0)
+{
+	// 乗り換え出来るか調べる。
+
+	if(now_time > weight[station1] )
+	{
+		return false;
+	}
+	if(station1==station2){
+		route.push_back(station2);
+		return true;
+	}
+	route.push_back(station1);
+	for(int n=0;n<Elements(good_paths);n++)
+	{
+		if(good_paths[n].st1 == station1 )
+		{
+			if(good_paths[n].st2 == station1)
+				continue;
+			if(weight_to_route(good_paths[n].st2,station2,weight,route,now_time + good_paths[n].time))
+				return true;
+		}
+		if(good_paths[n].st2 == station1 )
+		{
+			if(good_paths[n].st1 == station1)
+				continue;
+			if(weight_to_route(good_paths[n].st1,station2,weight,route,now_time + good_paths[n].time))
+				return true;
+		}
+	}
+	route.pop_back();
+	return false;
+}
+
+void get_short(st::Station station1, st::Station station2, vector<st::Station> &route)
+{
+	int weight[st::StationEnd];
+	for(int i=0;i<st::StationEnd;i++)
+		weight[i]=0x7fffffff;
+	weight[station1]=0;
+	get_weight(station1,station2,weight);
+	weight_to_route(station1,station2,weight,route);
+	for(int i=0;i<route.size();i++)
+		cout<<route[i]<<endl;
+}
 
 TEST(AddTest, ForDebug)
 {
@@ -220,6 +293,41 @@ TEST(AddTest, Time)
 	EXPECT_TRUE(get_eta(st::Kawasaki,st::Tokyo,&eta));
 	EXPECT_LE(24,eta);
 	cout << "川崎⇒東京:" << eta << endl;
+}
+
+TEST(AddTest, Short)
+{
+	std::vector<st::Station> route;
+	get_short(st::Yokohama,st::Ohmiya,route);
+	std::vector<st::Station> yokohama_to_ohmiya;
+	yokohama_to_ohmiya.push_back(st::Yokohama);
+	yokohama_to_ohmiya.push_back(st::Kawasaki);
+	yokohama_to_ohmiya.push_back(st::Tokyo);
+	yokohama_to_ohmiya.push_back(st::Akihabara);
+	yokohama_to_ohmiya.push_back(st::Tabata);
+	yokohama_to_ohmiya.push_back(st::Akabane);
+	yokohama_to_ohmiya.push_back(st::MinamiUrawa);
+	yokohama_to_ohmiya.push_back(st::Ohmiya);
+	EXPECT_EQ(yokohama_to_ohmiya, route);
+
+	route.clear();
+	get_short(st::NishiKokubunji, st::Tokyo,route);
+	std::vector<st::Station> nishikokubunji_to_tokyo;
+	nishikokubunji_to_tokyo.push_back(st::NishiKokubunji);
+	nishikokubunji_to_tokyo.push_back(st::Shinjuku);
+	nishikokubunji_to_tokyo.push_back(st::Ochanomizu);
+	nishikokubunji_to_tokyo.push_back(st::Tokyo);
+	EXPECT_EQ(nishikokubunji_to_tokyo, route);
+
+	route.clear();
+	get_short(st::Ikebukuro, st::Kawasaki,route);
+	std::vector<st::Station> ikebukuro_to_kawasaki;
+	ikebukuro_to_kawasaki.push_back(st::Ikebukuro);
+	ikebukuro_to_kawasaki.push_back(st::Tabata);
+	ikebukuro_to_kawasaki.push_back(st::Akihabara);
+	ikebukuro_to_kawasaki.push_back(st::Tokyo);
+	ikebukuro_to_kawasaki.push_back(st::Kawasaki);
+	EXPECT_EQ(ikebukuro_to_kawasaki, route);
 }
 
 
