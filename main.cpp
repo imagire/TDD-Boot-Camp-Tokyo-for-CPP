@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#pragma comment( lib, "./lib/gtest_maind.lib")
 /*
 int add(int x, int y)
 {
@@ -61,7 +62,7 @@ TEST(SubTest, TestSub)
 {
 		EXPECT_EQ(1, sub(2,1));
 }
-*/
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
@@ -70,3 +71,4 @@ int main(int argc, char* argv[])
 
 	return ret;
 }
+*/
