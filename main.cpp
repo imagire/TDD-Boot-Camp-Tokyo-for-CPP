@@ -8,21 +8,6 @@ typedef enum {
 
 extern bool checkTrainRoute(STATION station1, STATION station2);
 
-int add(int x, int y)
-{
-    return x + y;
-}
-
-TEST(AddTest, Test1)
-{
-    EXPECT_EQ(2, add(1, 1));
-}
-
-TEST(AddTest, Test2)
-{
-    EXPECT_EQ(3, add(1, 2));
-}
-
 TEST(checkTrainRouteTest, Test1)
 {
     EXPECT_TRUE(checkTrainRoute(OMIYA,YOKOHAMA));
