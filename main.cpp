@@ -1,41 +1,51 @@
 #include <gtest/gtest.h>
 
-enum
+enum Station
 {
 	Station_Yokohama,
 	Station_Ohshima,
-	Station_Ohmiya
+	Station_Ohmiya,
+	Station_Tokyo
 };
 
-int add(int x, int y)
+struct Path
 {
-    return x + y;
-}
+	Station st1;
+	Station st2;
+}const good_paths[]=
+{
+	{Station_Yokohama,Station_Ohmiya},
+	{Station_Tokyo,Station_Yokohama},
+	{Station_Tokyo,Station_Ohmiya},
+};
 
-bool is_reach(int start, int end)
+#define Elements(a) (sizeof(a)/sizeof(a[0]))
+
+bool is_reach(int station1, int station2)
 {
-	if( Station_Yokohama == start  && Station_Ohmiya == end)
+	for(int n=0;n<Elements(good_paths);n++)
 	{
-		return true;
+		if(good_paths[n].st1 == station1 && good_paths[n].st2 == station2)
+			return true;
+		if(good_paths[n].st2 == station1 && good_paths[n].st1 == station2)
+			return true;
 	}
-
 	return false;
-}
-
-TEST(AddTest, Test1)
-{
-    EXPECT_EQ(2, add(1, 1));
-}
-
-TEST(AddTest, Test2)
-{
-    EXPECT_EQ(3, add(1, 2));
 }
 
 TEST(AddTest, Exchange)
 {
 	EXPECT_FALSE(is_reach(Station_Yokohama,Station_Ohshima));
+	EXPECT_FALSE(is_reach(Station_Ohshima,Station_Yokohama));
+
 	EXPECT_TRUE(is_reach(Station_Yokohama,Station_Ohmiya));
+	EXPECT_TRUE(is_reach(Station_Ohmiya,Station_Yokohama));
+
+	EXPECT_TRUE(is_reach(Station_Yokohama,Station_Tokyo));
+	EXPECT_TRUE(is_reach(Station_Tokyo,Station_Yokohama));
+
+	EXPECT_TRUE(is_reach(Station_Tokyo,Station_Ohmiya));
+	EXPECT_TRUE(is_reach(Station_Ohmiya,Station_Tokyo));
 }
 
 
