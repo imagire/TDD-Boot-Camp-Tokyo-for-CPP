@@ -23,18 +23,18 @@ Pair arPair =
 	"‘å‹{", "‰¡•l"
 };
 
-bool CanGo( char* src, char* dst )
+bool CanGo( char* src, char* dst, char* way )
 {
-	if ( strcmp( arPair.src, src ) )
+	if ( strcmp( arPair.src, src ) == 0 )
 	{
-		if ( strcmp( arPair.dst, dst ) )
+		if ( strcmp( arPair.dst, dst ) == 0 )
 		{
 			return true;
 		}
 	}
-	else if ( strcmp( arPair.src, dst ) )
+	else if ( strcmp( arPair.src, dst ) == 0 )
 	{
-		if ( strcmp( arPair.dst, src ) )
+		if ( strcmp( arPair.dst, src ) == 0 )
 		{
 			return true;
 		}
@@ -45,8 +45,12 @@ bool CanGo( char* src, char* dst )
 
 TEST( TDDBC, Project1 )
 {
-	EXPECT_EQ( true, CanGo( "‘å‹{", "‰¡•l" ));
-	EXPECT_EQ( false, CanGo( "‘å“‡", "‰¡•l" ));
+	// ‘å‹{‚©‚ç‰¡•l‚Ö‚Í“dŽÔ‚Å‚¢‚¯‚é
+	EXPECT_EQ( true, CanGo( "‘å‹{", "‰¡•l", "“dŽÔ" ));
+	EXPECT_EQ( true, CanGo( "‰¡•l", "‘å‹{", "“dŽÔ" ));
+	// ‘å“‡‚Ö‚Í‰¡•l‚©‚ç“dŽÔ‚Å‚Í‚¢‚¯‚È‚¢
+	EXPECT_EQ( false, CanGo( "‘å“‡", "‰¡•l", "“dŽÔ" ));
+	EXPECT_EQ( false, CanGo( "‰¡•l", "‘å“‡", "“dŽÔ" ));
 }
 /*
 TEST(AddTest, Test1)
