@@ -3,10 +3,20 @@
 
 enum Station
 {
-  yokohama,
-  oomiya,
-  ooshima,
-  tokyo
+  YOKOHAMA,
+  OOMIYA,
+  OOSHIMA,
+  TOKYO,
+  KAWASAKI,
+  MUSASHIKOSUGI, 
+  SHIBUYA, SHINJYUKU, 
+  IKEBUKURO, 
+  AKABANE, 
+  TABATA, 
+  AKIHABARA, 
+  OTYANOMIZU, 
+  NISHIKOKUBUNJI, 
+  MINAMIURAWA
 };
 
 struct RootSet
@@ -18,7 +28,8 @@ struct RootSet
 
 
 // 駅の路線図
-Station stationRoot[] = {yokohama, tokyo, oomiya};
+Station stationRoot[] = {YOKOHAMA, TOKYO, OOMIYA, KAWASAKI, MUSASHIKOSUGI, SHIBUYA, SHINJYUKU, IKEBUKURO, AKABANE, 
+TABATA, AKIHABARA, OTYANOMIZU, NISHIKOKUBUNJI, MINAMIURAWA};
 
 
 bool canGo(RootSet set)
@@ -45,7 +56,7 @@ bool canGo(RootSet set)
  */
 TEST(TrainTest, YokohamaToOomiya)
 {
-  RootSet rootSet(yokohama, oomiya);
+  RootSet rootSet(YOKOHAMA, OOMIYA);
   EXPECT_TRUE(canGo(rootSet));
 }
 
@@ -54,7 +65,7 @@ TEST(TrainTest, YokohamaToOomiya)
  */
 TEST(TrainTest, YokohamaNotToOoshima)
 {
-  RootSet rootSet(yokohama, ooshima);
+  RootSet rootSet(YOKOHAMA, OOSHIMA);
   EXPECT_FALSE(canGo(rootSet));
 }
 
@@ -63,7 +74,7 @@ TEST(TrainTest, YokohamaNotToOoshima)
  */
 TEST(TrainTest, YokohamaToTokyo)
 {
-  RootSet rootSet(yokohama, tokyo);
+  RootSet rootSet(YOKOHAMA, TOKYO);
   EXPECT_TRUE(canGo(rootSet));
 }
 
@@ -72,7 +83,7 @@ TEST(TrainTest, YokohamaToTokyo)
  */
 TEST(TrainTest, TokyoToYokohama)
 {
-  RootSet rootSet(tokyo, yokohama);
+  RootSet rootSet(TOKYO, YOKOHAMA);
   EXPECT_TRUE(canGo(rootSet));
 }
 
@@ -81,7 +92,7 @@ TEST(TrainTest, TokyoToYokohama)
  */
 TEST(TrainTest, TokyoToOomiya)
 {
-  RootSet rootSet(tokyo, oomiya);
+  RootSet rootSet(TOKYO, OOMIYA);
   EXPECT_TRUE(canGo(rootSet));
 }
 
@@ -90,9 +101,49 @@ TEST(TrainTest, TokyoToOomiya)
  */
 TEST(TrainTest, OomiyaToTokyo)
 {
-  RootSet rootSet(oomiya, tokyo);
+  RootSet rootSet(OOMIYA, TOKYO);
   EXPECT_TRUE(canGo(rootSet));
 }
+
+
+
+// AnywhereTest用のテストデータ
+Station stationRootTest[] = {YOKOHAMA, TOKYO, OOMIYA, KAWASAKI, MUSASHIKOSUGI, SHIBUYA, SHINJYUKU, IKEBUKURO, AKABANE, 
+TABATA, AKIHABARA, OTYANOMIZU, NISHIKOKUBUNJI, MINAMIURAWA};
+/*
+ * 色々な場所に行けることを確認しよう！
+ */
+TEST(TrainTest, AnywhereTest)
+{
+  int size = sizeof(stationRootTest) / sizeof(stationRootTest[0]);
+  for(int i = 0; i < size; ++i)
+  {
+    Station tar = stationRootTest[i];
+    for(int j = 0; j < size; ++j)
+    {
+      Station dist = stationRootTest[j];
+      RootSet rootSet(tar, dist);
+      EXPECT_TRUE(canGo(rootSet));
+    }
+  }
+}
+
+class TrainTestP : public ::testing::TestWithParam<Station> {
+  
+};
+
+/*
+ * ParameterizedTestにチャレンジ！
+ */
+TEST_P(TrainTestP, AllStationTest)
+{
+  Station station = GetParam();
+  RootSet rootSet(station, station);
+  EXPECT_TRUE(canGo(rootSet));
+}
+
+INSTANTIATE_TEST_CASE_P(InstantionName, TrainTestP, ::testing::Values(YOKOHAMA,TOKYO,OOMIYA));
+//INSTANTIATE_TEST_CASE_P(InstantionName, TrainTestP, ::testing::Values("横浜"));
 
 int main(int argc, char* argv[])
 {
