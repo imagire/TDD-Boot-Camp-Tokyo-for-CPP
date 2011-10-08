@@ -1,20 +1,61 @@
 #include <gtest/gtest.h>
+#include "path.h"
 
-
-int add(int x, int y)
+TEST(PathTest, IsArrivalTestFromOomiyaToYokohama)
 {
-    return x + y;
+	Path path;
+	Path::Root expected_root;
+	Path::Root result;
+
+	path.AddReach("‘å‹{", "“Œ‹ž");
+	path.AddReach("“Œ‹ž", "‰¡•l");
+
+	EXPECT_EQ(true, path.IsArrival("‘å‹{", "‰¡•l", result));
+
+	expected_root.push_back("‘å‹{");
+	expected_root.push_back("“Œ‹ž");
+	expected_root.push_back("‰¡•l");
+
+	EXPECT_EQ(expected_root, result);
+
 }
 
-TEST(AddTest, Test1)
+TEST(PathTest, IsArrivalTestFromYokohamaToOomiya)
 {
-    EXPECT_EQ(2, add(1, 1));
+	Path path;
+	Path::Root expected_root;
+	Path::Root result;
+
+	path.AddReach("‘å‹{", "“Œ‹ž");
+	path.AddReach("“Œ‹ž", "‰¡•l");
+
+	EXPECT_EQ(true, path.IsArrival("‰¡•l", "‘å‹{", result));
+
+	expected_root.push_back("‰¡•l");
+	expected_root.push_back("“Œ‹ž");
+	expected_root.push_back("‘å‹{");
+
+	EXPECT_EQ(expected_root, result);
 }
 
-TEST(AddTest, Test2)
+TEST(PathTest, IsArrivalTestFromYokohamaToTokyo)
 {
-    EXPECT_EQ(3, add(1, 2));
+	Path path;
+	Path::Root expected_root;
+	Path::Root result;
+
+	path.AddReach("‘å‹{", "“Œ‹ž");
+	path.AddReach("“Œ‹ž", "‰¡•l");
+
+	EXPECT_EQ(true, path.IsArrival("‰¡•l", "“Œ‹ž", result));
+
+	expected_root.push_back("‰¡•l");
+	expected_root.push_back("“Œ‹ž");
+
+	EXPECT_EQ(expected_root, result);
 }
+
+#if 0
 enum BASYO {
 	OOMIYA = 0,
 	YOKOHAMA,
@@ -57,7 +98,7 @@ TEST(Work2, Test1)
 	EXPECT_EQ(true, IsToutyaku(OOMIYA, TOKYO));
 	EXPECT_EQ(true, IsToutyaku(TOKYO, OOMIYA));
 }
-
+#endif
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
