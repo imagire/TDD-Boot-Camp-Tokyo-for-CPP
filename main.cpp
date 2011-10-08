@@ -31,3 +31,17 @@ TEST(Train, Problem3)
 {
 	EXPECT_TRUE(cango(YOKOHAMA,OMIYA));
 }
+
+TEST(Train, Problem4)
+{
+    for(TRAIN_STATION i = OMIYA; i < MAX-1; i = static_cast<TRAIN_STATION>(i+1)) {
+        for(TRAIN_STATION j = YOKOHAMA; j < MAX; j = static_cast<TRAIN_STATION>(j+1)) {
+            if ( i== j ) continue;
+            else if ((i == OSHIMA) || (j==OSHIMA)) {
+                EXPECT_FALSE(cango(i, j));
+            }else{
+                EXPECT_TRUE(cango(i, j));
+            }
+	   }
+    }
+}
