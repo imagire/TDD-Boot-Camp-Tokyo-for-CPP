@@ -1,11 +1,20 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <map>
+
+
 typedef enum {
 	OMIYA,
 	YOKOHAMA,
 	OSHIMA
 } STATION;
 
+typedef std::vector<STATION> STATIONS;
+typedef std::map<STATION, STATIONS> STATION_MAP;
+STATION_MAP gStationMap;
+
+extern void InitializeMap();
 extern bool checkTrainRoute(STATION station1, STATION station2);
 
 TEST(checkTrainRouteTest, Test1)
@@ -23,8 +32,11 @@ TEST(checkTrainRouteTest, Test2)
 	EXPECT_FALSE(checkTrainRoute(OSHIMA,OSHIMA));
 }
 
+
 int main(int argc, char* argv[])
 {
+	InitializeMap();
+
     ::testing::InitGoogleTest(&argc, argv);
 
 	int ret = RUN_ALL_TESTS();
@@ -32,21 +44,41 @@ int main(int argc, char* argv[])
 	return ret;
 }
 
+
+std::pair<STATION, STATIONS> getPair(STATION st)
+{
+	STATIONS neighbors;
+	switch(st)
+	{
+	case YOKOHAMA :
+		neighbors.push_back(OMIYA);
+		break;
+	case OMIYA :
+		neighbors.push_back(YOKOHAMA);
+		break;
+	case OSHIMA :
+		break;
+	default :
+		break;
+	}
+	return std::pair<STATION, STATIONS>(st, neighbors);
+}
+
+void InitializeMap()
+{
+	gStationMap.insert(getPair(YOKOHAMA));
+	gStationMap.insert(getPair(OMIYA));
+	gStationMap.insert(getPair(OSHIMA));
+}
+
 bool checkTrainRoute(STATION station1, STATION station2)
 {
-	if (station1 == OMIYA)
+	STATIONS stations = gStationMap[station1];
+	if(std::find(stations.begin(), stations.end(), station2)
+		!= stations.end())
 	{
-		if (station2 == YOKOHAMA)
-		{
-			return true;
-		}
+		return true;
 	}
-	else if (station2 == OMIYA)
-	{
-		if (station1 == YOKOHAMA)
-		{
-			return true;
-		}
-	}
+
 	return false;
 }
