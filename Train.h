@@ -30,11 +30,11 @@ bool cango(TRAIN_STATION start, TRAIN_STATION end);
 
 class Station {
     private:
-        vector<Station> myTo;
+        vector<Station*> myTo;
     public:
         TRAIN_STATION myName;
         Station(TRAIN_STATION name):myName(name) {}
-        void addStation(Station &to);
+        void addStation(Station *to);
         bool canGo(Station &to, vector<Station> &stopped);
 };
 

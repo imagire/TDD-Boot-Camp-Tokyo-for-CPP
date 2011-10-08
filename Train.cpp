@@ -1,4 +1,5 @@
 #include "Train.h"
+#include <iterator>
 #include <algorithm>
 using namespace std;
 
@@ -33,7 +34,7 @@ bool cango(TRAIN_STATION start, TRAIN_STATION end)
 	return false;
 }
 
-void Station::addStation(Station &to) {
+void Station::addStation(Station *to) {
     myTo.push_back(to);
 }
 
@@ -49,10 +50,10 @@ bool Station::canGo(Station &to, vector<Station> &stopped){
     }
     
     bool retVal = false;
-    for (vector<Station>::iterator it = myTo.begin(); it != myTo.end(); it++) {
+    for (vector<Station*>::iterator it = myTo.begin(); it != myTo.end(); it++) {
         vector<Station> copy_stopped(stopped);
         copy_stopped.push_back(myName);
-        retVal = it->canGo(to, copy_stopped);
+        retVal = (*it)->canGo(to, copy_stopped);
         
         if (retVal == true) {
             stopped.clear();

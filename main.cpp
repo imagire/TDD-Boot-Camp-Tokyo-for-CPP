@@ -6,10 +6,10 @@ Station stTokyo(TOKYO);
 Station stOmiya(OMIYA);
 
 void createStation() {
-    stYokohama.addStation(stTokyo);
-    stTokyo.addStation(stYokohama);
-    stOmiya.addStation(stTokyo);
-    stTokyo.addStation(stOmiya);
+    stYokohama.addStation(&stTokyo);
+    stTokyo.addStation(&stYokohama);
+    stOmiya.addStation(&stTokyo);
+    stTokyo.addStation(&stOmiya);
 } 
 
 int main(int argc, char* argv[])
@@ -42,7 +42,8 @@ TEST(Train, Problem2)
 
 TEST(Train, Problem3)
 {
-    vector<Station> stopped;
+	createStation();
+	vector<Station> stopped;
 	EXPECT_TRUE(stYokohama.canGo(stOmiya, stopped));
 }
 
