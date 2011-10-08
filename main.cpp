@@ -16,14 +16,16 @@ enum Station
   AKIHABARA, 
   OTYANOMIZU, 
   NISHIKOKUBUNJI, 
-  MINAMIURAWA
+  MINAMIURAWA,
+  STATION_NUM
 };
 
 struct RootSet
 {
   Station tar;
   Station dist;
-  RootSet(Station _tar, Station _dist): tar(_tar), dist(_dist) {};
+  int time;
+  RootSet(Station _tar, Station _dist, int _time = 0): tar(_tar), dist(_dist), time(_time) {};
 };
 
 
@@ -31,6 +33,20 @@ struct RootSet
 Station stationRoot[] = {YOKOHAMA, TOKYO, OOMIYA, KAWASAKI, MUSASHIKOSUGI, SHIBUYA, SHINJYUKU, IKEBUKURO, AKABANE, 
 TABATA, AKIHABARA, OTYANOMIZU, NISHIKOKUBUNJI, MINAMIURAWA};
 
+// ÉãÅ[ÉgÇÃåqÇ™ÇËÇï\Ç∑óÒãì
+RootSet stationRootSet[] = 
+{
+	RootSet(YOKOHAMA, KAWASAKI, 14),
+	RootSet(YOKOHAMA, MUSASHIKOSUGI, 23),
+
+	RootSet(MUSASHIKOSUGI, YOKOHAMA, 23),
+	RootSet(KAWASAKI, TOKYO, 24),
+	RootSet(MUSASHIKOSUGI, SHIBUYA, 21),
+	RootSet(KAWASAKI, MUSASHIKOSUGI, 19),
+};
+
+// àÍìxí Ç¡ÇΩâw
+std::vector<Station> passedSt;
 
 bool canGo(RootSet set)
 {
@@ -49,6 +65,42 @@ bool canGo(RootSet set)
   }
 
   return false;
+}
+
+
+/*
+ * 2âwä‘Ç…Ç©Ç©ÇÈéûä‘ÇãÅÇﬂÇÈ
+ */
+int getTakeTime(RootSet rootSet)
+{
+	passedSt.push_back(rootSet.tar);
+	int size = sizeof(stationRootSet) / sizeof(stationRootSet[0]);
+	for(int i = 0; i < size; ++i)
+	{
+		if(stationRootSet[i].tar == rootSet.tar){
+			// àÍív
+			if(stationRootSet[i].dist == rootSet.dist)
+			{
+				return stationRootSet[i].time;
+			}
+			RootSet subRootSet(stationRootSet[i].dist, rootSet.dist);
+			bool isPassed = false;
+			for(int j = 0; j < passedSt.size(); ++j)
+			{
+				if(passedSt[j] == stationRootSet[i].dist)
+					isPassed = true;
+			}
+			if(!isPassed)
+			{
+				int retTime = getTakeTime(subRootSet);
+				if(retTime != 0)
+				{
+					return stationRootSet[i].time + retTime;
+				}
+			}
+		}
+	}
+	return 0;
 }
 
 /*
@@ -128,13 +180,40 @@ TEST(TrainTest, AnywhereTest)
   }
 }
 
-class TrainTestP : public ::testing::TestWithParam<Station> {
-  
-};
+
+/*
+ * â°ïl->êÏçËÇ…Ç©Ç©ÇÈéûä‘ÇÕ14ï™
+ */
+TEST(TakeTime, YokohamaToKawasaki)
+{
+	RootSet rootSet(YOKOHAMA, KAWASAKI);
+	EXPECT_EQ(14, getTakeTime(rootSet));
+}
+
+/*
+ * â°ïl->ìåãûÇ…Ç©Ç©ÇÈç≈íZéûä‘ÇÕ38ï™
+ */
+TEST(TakeTime, YokohamaToTokyo)
+{
+	RootSet rootSet(YOKOHAMA, TOKYO);
+	EXPECT_EQ(38, getTakeTime(rootSet));
+}
+/*
+ * â°ïl->èaíJÇ…Ç©Ç©ÇÈç≈íZéûä‘ÇÕ44ï™
+ */
+TEST(TakeTime, YokohamaToShibuya)
+{
+	RootSet rootSet(YOKOHAMA, SHIBUYA);
+	EXPECT_EQ(54, getTakeTime(rootSet));
+}
 
 /*
  * ParameterizedTestÇ…É`ÉÉÉåÉìÉWÅI
  */
+class TrainTestP : public ::testing::TestWithParam<Station> {
+  
+};
+
 TEST_P(TrainTestP, AllStationTest)
 {
   Station station = GetParam();
