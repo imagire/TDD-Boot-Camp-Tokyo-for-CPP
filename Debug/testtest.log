@@ -1,0 +1,23 @@
+﻿2011/10/08 11:29:59 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "C:\Users\031308\Documents\TDD-Boot-Camp-Tokyo-for-CPP\testtest.vcxproj" (build ターゲット)。
+     1>InitializeBuildStatus:
+         "Debug\testtest.unsuccessfulbuild" のタッチ タスクを実行しています。
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\031308\Documents\TDD-Boot-Camp-Tokyo-for-CPP\include" /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>main.cpp(43): error C2664: 'canGo' : 2 番目の引数を 'std::_List_const_iterator<_Mylist>' から 'const std::string &' に変換できません。(新しい機能 ; ヘルプを参照)
+                 with
+                 [
+                     _Mylist=std::_List_val<std::string,std::allocator<testing::internal::string>>
+                 ]
+                 理由: 'std::_List_const_iterator<_Mylist>' から 'const std::string' へは変換できません。
+                 with
+                 [
+                     _Mylist=std::_List_val<std::string,std::allocator<testing::internal::string>>
+                 ]
+                 この変換を実行可能なユーザー定義変換演算子がないか、または演算子を呼び出せません。
+     1>プロジェクト "C:\Users\031308\Documents\TDD-Boot-Camp-Tokyo-for-CPP\testtest.vcxproj" (build ターゲット) のビルドが終了しました -- 失敗。
+
+ビルドに失敗しました。
+
+経過時間 00:00:02.19
