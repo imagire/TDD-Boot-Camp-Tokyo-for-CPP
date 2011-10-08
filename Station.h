@@ -5,3 +5,4 @@ enum ESTATION_NAME{
 	eTokyo,
 	eSTATION_NAME_MAX
 };
+

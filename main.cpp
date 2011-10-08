@@ -24,6 +24,13 @@ TEST(AddTest, Test2)
 {
 }
 
+bool is_can_go[eSTATION_NAME_MAX][eSTATION_NAME_MAX] = {
+	{false, true, false, true},
+	{true, false, false, true},
+	{false, false, false, false},
+	{true, true, false, false}
+};
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
@@ -34,25 +41,5 @@ int main(int argc, char* argv[])
 }
 
 bool cango(ESTATION_NAME rv_dep_station, ESTATION_NAME rv_dest_station){
-	if(rv_dep_station == rv_dest_station){
-		return false;//ÉGÉâÅ[.
-	}
-	else{
-		if( (rv_dep_station == eOhmiya) && (rv_dest_station == eYokohama) ){
-			return  true;
-		}
-		else if( (rv_dep_station == eYokohama) && (rv_dest_station == eOhshima) ){
-			return false;
-		}
-		else if ( (rv_dep_station == eYokohama) && (rv_dest_station == eTokyo) ){
-			return true;
-		}
-		else if ( ( rv_dep_station == eTokyo) && (rv_dest_station == eOhmiya) ){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-	return false;
+		return(is_can_go[rv_dep_station][rv_dest_station]);
 }
