@@ -7,12 +7,12 @@ int add(int x, int y)
 
 TEST(AddTest, Test1)
 {
-	EXPECT_TRUE( cango(eYokohama, eOhmiya) );
+	EXPECT_TRUE( cango(eOhmiya, eYokohama ) );
+	EXPECT_FALSE( cango(eYokohama, eOhshima ) );
 }
 
 TEST(AddTest, Test2)
 {
-    EXPECT_FALSE( cango(eYokohama, eOhshima) );
 }
 
 int main(int argc, char* argv[])
@@ -26,11 +26,14 @@ int main(int argc, char* argv[])
 
 bool cango(ESTATION_NAME rv_dep_station, ESTATION_NAME rv_dest_station){
 	if(rv_dep_station == rv_dest_station){
-		//エラー.
+		return false;//エラー.
 	}
 	else{
-		if( (rv_dep_station == eOhmiya) && (rv_dep_station == eYokohama) ){
+		if( (rv_dep_station == eOhmiya) && (rv_dest_station == eYokohama) ){
 			return  true;
+		}
+		else if( (rv_dep_station == eYokohama) && (rv_dep_station == eOhshima) ){
+			return false;
 		}
 		else{
 			return false;
