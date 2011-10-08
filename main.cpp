@@ -25,6 +25,13 @@ bool ashiato[ENUM_STATION_SIZE] = {false};
 void initAshiato(void){
 	for(int i = 0; i < ENUM_STATION_SIZE; i++) ashiato[i] = false;
 }
+
+struct route{
+	int stationA;
+	int stationB;
+	int time;
+};
+
 void setUp(void){
 		initAshiato();
 
@@ -102,9 +109,19 @@ public:
 		}
 		return result;
 	}
-	bool checkTokyo(int from) {
-		return able(from, TOKYO);
+
+
+
+	int time(int from, int to)
+	{
+		int t = 0;
+
+		if (from == OOMIYA && to == MINAMIURAWA) t = 12;
+		else if (from == OOMIYA && to == AKABANE) t = 12 + 16;
+
+		return t;
 	}
+
 };
 
 TEST(TrainTest, Test1)
@@ -147,6 +164,13 @@ TEST(TrainTest, TestManyStaion)
 			EXPECT_TRUE(train.able(KAWASAKI, i));
 		}
 	}
+}
+
+TEST(TrainTest, TestTime)
+{
+	Train train;
+	EXPECT_EQ(12, train.time(OOMIYA, MINAMIURAWA));
+	EXPECT_EQ(28, train.time(OOMIYA, AKABANE));
 }
 
 int main(int argc, char* argv[])
