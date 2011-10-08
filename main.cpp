@@ -10,17 +10,17 @@ extern bool checkTrainRoute(STATION station1, STATION station2);
 
 TEST(checkTrainRouteTest, Test1)
 {
-    EXPECT_TRUE(checkTrainRoute(OMIYA,YOKOHAMA));
-    EXPECT_TRUE(checkTrainRoute(YOKOHAMA,OMIYA));
+	EXPECT_TRUE(checkTrainRoute(OMIYA,YOKOHAMA));
+	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,OMIYA));
 }
 
 TEST(checkTrainRouteTest, Test2)
 {
 	EXPECT_FALSE(checkTrainRoute(OSHIMA,YOKOHAMA));
 	EXPECT_FALSE(checkTrainRoute(YOKOHAMA,OSHIMA));
-    EXPECT_FALSE(checkTrainRoute(OMIYA,OMIYA));
-    EXPECT_FALSE(checkTrainRoute(YOKOHAMA,YOKOHAMA));
-    EXPECT_FALSE(checkTrainRoute(OSHIMA,OSHIMA));
+	EXPECT_FALSE(checkTrainRoute(OMIYA,OMIYA));
+	EXPECT_FALSE(checkTrainRoute(YOKOHAMA,YOKOHAMA));
+	EXPECT_FALSE(checkTrainRoute(OSHIMA,OSHIMA));
 }
 
 int main(int argc, char* argv[])
