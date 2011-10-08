@@ -5,10 +5,23 @@
 
 
 typedef enum {
+	AKABANE,
+	AKIHABARA,
+	IKEBUKURO,
+	KAWASAKI,
+	MINAMIURAWA,
+	MUSASHIKOSUGI,
+	NISHIKOKUBUNJI,
+	OCHANOMIZU,
 	OMIYA,
-	YOKOHAMA,
 	OSHIMA,
-	TOKYO
+	SHIBUYA,
+	SHINJUKU,
+	TABATA,
+	TOKYO,
+	YOKOHAMA,
+
+	STATION_COUNT
 } STATION;
 
 typedef std::vector<STATION> STATIONS;
@@ -20,23 +33,32 @@ extern void InitializeMap();
 extern bool checkTrainRoute(STATION station1, STATION station2);
 extern bool checkTrainRoute(STATION station1, STATION station2, STATIONS * visitedStations);
 
-TEST(checkTrainRouteTest, Test1)
+TEST(checkTrainRouteTest, 大島以外の駅は全部到達できるテスト)
 {
-	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,TOKYO));
-	EXPECT_TRUE(checkTrainRoute(TOKYO,YOKOHAMA));
-	EXPECT_TRUE(checkTrainRoute(TOKYO,OMIYA));
-	EXPECT_TRUE(checkTrainRoute(OMIYA,TOKYO));
-
-	EXPECT_TRUE(checkTrainRoute(OMIYA,YOKOHAMA));
-	EXPECT_TRUE(checkTrainRoute(YOKOHAMA,OMIYA));
-
-
+	for(int i=0; i<STATION_COUNT; i++)
+	{
+		for(int j=0; j<STATION_COUNT; j++)
+		{
+			STATION st1 = static_cast<STATION>(i);
+			STATION st2 = static_cast<STATION>(j);
+			if(((st1 == OSHIMA) || (st2 == OSHIMA)) ||
+				(st1 == st2))
+			{
+				continue;
+			}
+			EXPECT_TRUE(checkTrainRoute(st1, st2));
+		}
+	}
 }
 
-TEST(checkTrainRouteTest, Test2)
+TEST(checkTrainRouteTest, 大島は到達できないテスト)
 {
 	EXPECT_FALSE(checkTrainRoute(OSHIMA,YOKOHAMA));
 	EXPECT_FALSE(checkTrainRoute(YOKOHAMA,OSHIMA));
+}
+
+TEST(checkTrainRouteTest, 自分自身はNGとするテスト)
+{
 	EXPECT_FALSE(checkTrainRoute(OMIYA,OMIYA));
 	EXPECT_FALSE(checkTrainRoute(YOKOHAMA,YOKOHAMA));
 	EXPECT_FALSE(checkTrainRoute(OSHIMA,OSHIMA));
@@ -60,19 +82,76 @@ std::pair<STATION, STATIONS> getPair(STATION st)
 	STATIONS neighbors;
 	switch(st)
 	{
-	case YOKOHAMA :
+	case AKABANE :	
+		neighbors.push_back(MINAMIURAWA);
+		neighbors.push_back(IKEBUKURO);
+		neighbors.push_back(TABATA);
+		break;
+	case AKIHABARA :	
+		neighbors.push_back(TABATA);
+		neighbors.push_back(OCHANOMIZU);
 		neighbors.push_back(TOKYO);
 		break;
-	case OMIYA :
+	case IKEBUKURO :	
+		neighbors.push_back(AKABANE);
+		neighbors.push_back(TABATA);
+		neighbors.push_back(SHINJUKU);
+		break;
+	case KAWASAKI :	
 		neighbors.push_back(TOKYO);
-		break;
-	case OSHIMA :
-		break;
-	case TOKYO :
+		neighbors.push_back(MUSASHIKOSUGI);
 		neighbors.push_back(YOKOHAMA);
-		neighbors.push_back(OMIYA);
 		break;
-	default :
+	case MINAMIURAWA :	
+		neighbors.push_back(OMIYA);
+		neighbors.push_back(AKABANE);
+		neighbors.push_back(NISHIKOKUBUNJI);
+		break;
+	case MUSASHIKOSUGI :	
+		neighbors.push_back(NISHIKOKUBUNJI);
+		neighbors.push_back(KAWASAKI);
+		neighbors.push_back(YOKOHAMA);
+		break;
+	case NISHIKOKUBUNJI :	
+		neighbors.push_back(MINAMIURAWA);
+		neighbors.push_back(SHINJUKU);
+		neighbors.push_back(MUSASHIKOSUGI);
+		break;
+	case OCHANOMIZU :	
+		neighbors.push_back(SHINJUKU);
+		neighbors.push_back(AKIHABARA);
+		neighbors.push_back(TOKYO);
+		break;
+	case OMIYA :	
+		neighbors.push_back(MINAMIURAWA);
+		break;
+	case OSHIMA :	
+		break;
+	case SHIBUYA :	
+		neighbors.push_back(SHINJUKU);
+		neighbors.push_back(TOKYO);
+		neighbors.push_back(MUSASHIKOSUGI);
+		break;
+	case SHINJUKU :	
+		neighbors.push_back(IKEBUKURO);
+		neighbors.push_back(OCHANOMIZU);
+		neighbors.push_back(SHIBUYA);
+		neighbors.push_back(NISHIKOKUBUNJI);
+		break;
+	case TABATA :	
+		neighbors.push_back(AKABANE);
+		neighbors.push_back(IKEBUKURO);
+		neighbors.push_back(AKIHABARA);
+		break;
+	case TOKYO :	
+		neighbors.push_back(AKIHABARA);
+		neighbors.push_back(OCHANOMIZU);
+		neighbors.push_back(SHIBUYA);
+		neighbors.push_back(KAWASAKI);
+		break;
+	case YOKOHAMA :	
+		neighbors.push_back(KAWASAKI);
+		neighbors.push_back(MUSASHIKOSUGI);
 		break;
 	}
 	return std::pair<STATION, STATIONS>(st, neighbors);
@@ -80,10 +159,22 @@ std::pair<STATION, STATIONS> getPair(STATION st)
 
 void InitializeMap()
 {
-	gStationMap.insert(getPair(YOKOHAMA));
+	gStationMap.insert(getPair(AKABANE));
+	gStationMap.insert(getPair(AKIHABARA));
+	gStationMap.insert(getPair(IKEBUKURO));
+	gStationMap.insert(getPair(KAWASAKI));
+	gStationMap.insert(getPair(MINAMIURAWA));
+	gStationMap.insert(getPair(MUSASHIKOSUGI));
+	gStationMap.insert(getPair(NISHIKOKUBUNJI));
+	gStationMap.insert(getPair(OCHANOMIZU));
 	gStationMap.insert(getPair(OMIYA));
 	gStationMap.insert(getPair(OSHIMA));
+	gStationMap.insert(getPair(SHIBUYA));
+	gStationMap.insert(getPair(SHINJUKU));
+	gStationMap.insert(getPair(TABATA));
 	gStationMap.insert(getPair(TOKYO));
+	gStationMap.insert(getPair(YOKOHAMA));
+
 }
 
 bool checkTrainRoute(STATION station1, STATION station2)
