@@ -12,6 +12,26 @@ int sub(int x, int y)
 }
 */
 
+enum PLACE_ID
+{
+	PLACE_ID_START,
+	PLACE_ID__AKABANE,
+	PLACE_ID__AKIHABARA,
+	PLACE_ID__IKEBUKURO,
+	PLACE_ID__KAWASAKI,
+	PLACE_ID__MINAMI_URAWA,
+	PLACE_ID__MUSASHI_KOSUGI,
+	PLACE_ID__NISHI_KOKUBUNJI,
+	PLACE_ID__OCHANOMIZU,
+	PLACE_ID__OOMIYA,
+	PLACE_ID__OOSHIMA,
+	PLACE_ID__SHIBUYA,
+	PLACE_ID__SHINJUKU,
+	PLACE_ID__TABATA,
+	PLACE_ID__TOKYO,
+	PLACE_ID__YOKOHAMA,
+	PLACE_ID_END
+};
 enum DIRECTION
 {
 	DIR_BOTH,
@@ -44,10 +64,45 @@ struct Link
 
 const char* WayList[] = { "All", "電車" };
 // 条件：src < dst 
-const Place PlaceList[] = {{"横浜",1},{"東京",2},{"大宮",3},{"大島",4}};
+const Place PlaceList[] = 
+{
+	{"横浜",PLACE_ID__YOKOHAMA},
+	{"川崎",PLACE_ID__KAWASAKI},
+	{"武蔵小杉",PLACE_ID__MUSASHI_KOSUGI},
+	{"西国分寺",PLACE_ID__NISHI_KOKUBUNJI},
+	{"渋谷",PLACE_ID__SHIBUYA},
+	{"東京",PLACE_ID__TOKYO},
+	{"新宿",PLACE_ID__SHINJUKU},
+	{"御茶ノ水",PLACE_ID__OCHANOMIZU},
+	{"秋葉原",PLACE_ID__AKIHABARA},
+	{"池袋",PLACE_ID__IKEBUKURO},
+	{"田端",PLACE_ID__TABATA},
+	{"赤羽",PLACE_ID__AKABANE},
+	{"南浦和",PLACE_ID__MINAMI_URAWA},
+	{"大宮",PLACE_ID__OOMIYA},
+//	{"大島",PLACE_ID__OOSHIMA}
+};
 const Link	LinkList[] = {
-							{1, 2, WAY_TRAIN, DIR_BOTH},
-							{2, 3, WAY_TRAIN, DIR_BOTH} 
+							{PLACE_ID__AKABANE, PLACE_ID__IKEBUKURO, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__AKABANE, PLACE_ID__MINAMI_URAWA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__AKABANE, PLACE_ID__TABATA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__AKIHABARA, PLACE_ID__TOKYO, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__AKIHABARA, PLACE_ID__OCHANOMIZU, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__AKIHABARA, PLACE_ID__TABATA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__IKEBUKURO, PLACE_ID__SHINJUKU, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__IKEBUKURO, PLACE_ID__TABATA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__KAWASAKI, PLACE_ID__MUSASHI_KOSUGI, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__KAWASAKI, PLACE_ID__TOKYO, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__KAWASAKI, PLACE_ID__YOKOHAMA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__MINAMI_URAWA, PLACE_ID__NISHI_KOKUBUNJI, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__MINAMI_URAWA, PLACE_ID__OOMIYA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__MUSASHI_KOSUGI, PLACE_ID__NISHI_KOKUBUNJI, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__MUSASHI_KOSUGI, PLACE_ID__SHIBUYA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__MUSASHI_KOSUGI, PLACE_ID__YOKOHAMA, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__NISHI_KOKUBUNJI, PLACE_ID__SHINJUKU, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__OCHANOMIZU, PLACE_ID__TOKYO, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__SHIBUYA, PLACE_ID__SHINJUKU, WAY_TRAIN, DIR_BOTH},
+							{PLACE_ID__SHIBUYA, PLACE_ID__TOKYO, WAY_TRAIN, DIR_BOTH}
 						 };
 
 int SearchID( char* place )
@@ -62,7 +117,10 @@ int SearchID( char* place )
 	return -1;
 }
 
-// Linkインデックスを返す
+// Linkしていればtrueを返す
+#define SEARCH_LEVEL 10
+int arLinkStack[SEARCH_LEVEL];
+int iLinkStack = 0;
 bool IsLinked( int src, int dst )
 {
 	if( src > dst )
@@ -87,10 +145,25 @@ bool IsLinked( int src, int dst )
 	// 間接的につながってるケース（再帰）
 	for( int i = 0; i < sizeof( LinkList ); i++ )
 	{
-		// 直接つながっているケース
+		for ( int j = iLinkStack; j == 0; --j)
+		{
+			if ( LinkList[i].srcid == LinkStack[j] )
+			{
+
+			}
+		}
+
 		if( LinkList[ i ].srcid == src )
 		{
 			int iNewSrc = LinkList[ i ].dstid;
+			if( IsLinked( iNewSrc, dst ) )
+			{
+				return true;
+			}
+		}
+		else if( LinkList[ i ].dstid == src )
+		{
+			int iNewSrc = LinkList[ i ].srcid;
 			if( IsLinked( iNewSrc, dst ) )
 			{
 				return true;
@@ -107,6 +180,12 @@ bool CanGo( char* src, char* dst, char* way = "All" )
 	if( iSrcId == -1 ) return false;
 	int iDstId = SearchID( dst );
 	if( iDstId == -1 ) return false;
+
+	// 同じ場合はtrueを返す
+	if( iSrcId == iDstId )
+	{
+		return true;
+	}
 
 	// リンクリスト検索
 	return IsLinked( iSrcId, iDstId );
@@ -137,6 +216,26 @@ TEST( TDDBC, Project3 )
 	// 横浜⇔大宮いける(どんな手段でも)
 	EXPECT_EQ( true, CanGo( "横浜", "大宮" ));
 	EXPECT_EQ( true, CanGo( "大宮", "横浜" ));
+}
+
+TEST( TDDBC, Project4 )
+{
+	bool bResult = true;
+
+	// 同じ駅の場合はいける
+	for( int i = 0; i< sizeof( PlaceList ); i++ )
+	{
+		for( int j = 0; j< sizeof( PlaceList ); j++ )
+		{
+			if ( CanGo( PlaceList[i].name, PlaceList[j].name ) == false )
+			{
+				bResult = false;
+			}
+		}
+	}
+
+	// 全経路いける(電車・大島以外)
+	EXPECT_TRUE( bResult );
 }
 
 
