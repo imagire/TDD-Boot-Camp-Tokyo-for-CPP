@@ -132,6 +132,13 @@ TEST( TDDBC, Project2 )
 	EXPECT_EQ( true, CanGo( "‘å‹{", "“Œ‹" ));
 }
 
+TEST( TDDBC, Project3 )
+{
+	// ‰¡•lÌ‘å‹{‚¢‚¯‚é(‚Ç‚ñ‚Èè’i‚Å‚à)
+	EXPECT_EQ( true, CanGo( "‰¡•l", "‘å‹{" ));
+	EXPECT_EQ( true, CanGo( "‘å‹{", "‰¡•l" ));
+}
+
 
 /*
 TEST(AddTest, Test1)
