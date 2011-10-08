@@ -5,6 +5,8 @@ int add(int x, int y)
     return x + y;
 }
 
+bool cango(ESTATION_NAME rv_dep_station, ESTATION_NAME rv_dest_station);
+
 TEST(AddTest, Test1)
 {
 	EXPECT_TRUE( cango(eOhmiya, eYokohama ) );
