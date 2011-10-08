@@ -1,6 +1,9 @@
 #ifndef Train
 #define Train
 
+#include <vector>
+using namespace std;
+
 enum TRAIN_STATION
 {
 	OMIYA = 0,
@@ -22,5 +25,17 @@ enum TRAIN_STATION
 };
 
 bool cango(TRAIN_STATION start, TRAIN_STATION end);
+
+#include <vector>
+
+class Station {
+    private:
+        vector<Station> myTo;
+    public:
+        TRAIN_STATION myName;
+        Station(TRAIN_STATION name):myName(name) {}
+        void addStation(Station &to);
+        bool canGo(Station &to, vector<Station> &stopped);
+};
 
 #endif

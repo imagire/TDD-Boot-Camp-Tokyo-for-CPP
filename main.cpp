@@ -1,6 +1,17 @@
 #include <gtest/gtest.h>
 #include "Train.h"
 
+Station stYokohama(YOKOHAMA);
+Station stTokyo(TOKYO);
+Station stOmiya(OMIYA);
+
+void createStation() {
+    stYokohama.addStation(stTokyo);
+    stTokyo.addStation(stYokohama);
+    stOmiya.addStation(stTokyo);
+    stTokyo.addStation(stOmiya);
+} 
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
@@ -10,6 +21,7 @@ int main(int argc, char* argv[])
 	return ret;
 }
 
+/*
 TEST(Train, Problem1)
 {
 	EXPECT_TRUE (cango(YOKOHAMA,   OMIYA));
@@ -26,12 +38,15 @@ TEST(Train, Problem2)
 	EXPECT_TRUE(cango(TOKYO,OMIYA));
 	EXPECT_TRUE(cango(OMIYA,TOKYO));
 }
+*/
 
 TEST(Train, Problem3)
 {
-	EXPECT_TRUE(cango(YOKOHAMA,OMIYA));
+    vector<Station> stopped;
+	EXPECT_TRUE(stYokohama.canGo(stOmiya, stopped));
 }
 
+/*
 TEST(Train, Problem4)
 {
     for(TRAIN_STATION i = OMIYA; i < MAX-1; i = static_cast<TRAIN_STATION>(i+1)) {
@@ -45,3 +60,5 @@ TEST(Train, Problem4)
 	   }
     }
 }
+*/
+
