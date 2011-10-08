@@ -1,48 +1,65 @@
 #include <gtest/gtest.h>
 
-int add(int x, int y)
-{
-    return x + y;
-}
+enum {
+	OOMIYA=0, 
+	YOKOHAMA,
+	OOSHIMA,
+	TOKYO,
+	AKABANE, 
+	KAWASAKI,
+	MUSASHIKOSUGI,
+	SHIBUYA,
+	NISHIKOKUBUNJI,
+	SHINJUKU,
+	OCHANOMIZU,
+	AKIHABARA,
+	IKEBUKURO,
+	TABATA,
+	MINAMIURAWA,
+	ENUM_STATION_SIZE
+};
 
-int sub(int x, int y)
-{
-    return x - y;
-}
+int nextStation[ENUM_STATION_SIZE][ENUM_STATION_SIZE] = {0};
 
-TEST(AddTest, Test1)
-{
-    EXPECT_EQ(2, add(1, 1));
-}
+bool ashiato[ENUM_STATION_SIZE][ENUM_STATION_SIZE] = {false};
 
-TEST(AddTest, Test2)
-{
-    EXPECT_EQ(3, add(1, 2));
-}
-
-TEST(SubTest, Test3)
-{
-    EXPECT_EQ(1, sub(2, 1));
-}
-
-TEST(SubTest, Test4)
-{
-    EXPECT_EQ(-1, sub(2, 3));
-}
-	enum {OOMIYA=0, YOKOHAMA, OOSHIMA, TOKYO};
 class Train {
-
-
 public:
 	Train () {};
 	bool able(int from, int to) {
 		bool result = false;
-		//if (from == YOKOHAMA && to == OOSHIMA) result = false;
+		nextStation[OOMIYA][YOKOHAMA] = 1;
+		nextStation[YOKOHAMA][OOMIYA] = 1;
+		nextStation[YOKOHAMA][OOSHIMA] = 0;
+		nextStation[YOKOHAMA][TOKYO] = 1;
+		nextStation[TOKYO][OOMIYA] = 1;
+		nextStation[TOKYO][YOKOHAMA] = 1;
+		nextStation[OOMIYA][TOKYO] = 1;
+		nextStation[AKIHABARA][KAWASAKI] = 1;
+		nextStation[KAWASAKI][TOKYO] = 1;
+		nextStation[KAWASAKI][AKIHABARA] = 1;
+		nextStation[TOKYO][KAWASAKI] = 1;
+		nextStation[AKIHABARA][KAWASAKI] = 1;
 
-		if ((from == OOMIYA && to == YOKOHAMA) 
-		||(from == YOKOHAMA && to == TOKYO)
-		||(from == TOKYO && to == OOMIYA)) result = true;
+		for(int i= 0; i < ENUM_STATION_SIZE; i++){
+			ashiato[from][i] = true;
+			if(nextStation[from][i] == 1){
+				if(i == to) {
+					result = true;
+					break;
+				}
+				else{
+					if(ashiato[from][i] == false)
+					{
+					result = able(i, to);
+					}
+				}
+			}
+		}
 		return result;
+	}
+	bool checkTokyo(int from) {
+		return able(from, TOKYO);
 	}
 };
 
@@ -50,7 +67,7 @@ TEST(TrainTest, Test1)
 {
 	Train train;
 
-	EXPECT_TRUE(train.able(OOMIYA, YOKOHAMA));
+//	EXPECT_TRUE(train.able(OOMIYA, YOKOHAMA));
 	EXPECT_FALSE(train.able(YOKOHAMA, OOSHIMA));
 }
 
@@ -60,8 +77,25 @@ TEST(TrainTest, Test2)
 
 	EXPECT_TRUE(train.able(YOKOHAMA, TOKYO));
 	EXPECT_TRUE(train.able(TOKYO, OOMIYA));
+	EXPECT_TRUE(train.able(TOKYO, YOKOHAMA));
+	EXPECT_TRUE(train.able(OOMIYA, TOKYO));
 }
 
+TEST(TrainTest, Test3)
+{
+	Train train;
+	EXPECT_TRUE(train.able(OOMIYA, YOKOHAMA));
+
+//EXPECT_TRUE(train.checkTokyo(OOMIYA) && train.checkTokyo(YOKOHAMA));
+}
+
+TEST(TrainTest, TestManyStaion)
+{
+	Train train;
+	EXPECT_TRUE(train.able(KAWASAKI, AKIHABARA));
+	EXPECT_TRUE(train.able(AKABANE, KAWASAKI));
+	
+}
 
 int main(int argc, char* argv[])
 {
