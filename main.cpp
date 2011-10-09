@@ -80,11 +80,11 @@ int RosenInfo::searchWithTime(EKI from,EKI to){
 void RosenInfo::routeInit( EKI start){
 	std::map<EKI,Path>::iterator it = graph.begin();
 	while( it != graph.end() ){
-		Path nil = {65535, new std::vector<EKI>};
-		(it->second).path = nil;
+		(it->second).time = 65535;
+		(it->second).path.clear();
 		it++;
 	}
-	graph[start] = 0;
+	graph[start].time = 0;
 }
 
 void RosenInfo::route(EKI from)
@@ -95,7 +95,7 @@ void RosenInfo::route(EKI from)
 	{
 		if (graph[it->connect].time > graph[from].time+it->time) {
 			graph[it->connect].time = graph[from].time+it->time;
-			graph[it->connect].path.assign = new std::vector(graph[from].path);
+			graph[it->connect].path.assign( graph[from].path.begin(), graph[from].path.end() );
 			graph[it->connect].path.push_back(from);
 			route(it->connect);
 		}
@@ -119,8 +119,9 @@ void RosenInfo::append(EKI from, EKI to, int time){
 	info[from].push_back(eki1);
 	info[to].push_back(eki2);
 
-	graph[from] = 0;
-	graph[to] = 0;
+	// ‹ó‚Ì—v‘f‚ðvector‚É’Ç‰Á
+	graph[from].time = 0;
+	graph[to].time = 0;
 }
 void RosenInfo::init(){
 	append(YOKOHAMA,MUSASHIKOSUGI,23);
@@ -178,8 +179,8 @@ TEST(Kadai1,MANYSTATION){
 
 	data.routeInit( OOMIYA);
 	data.route(OOMIYA);
-	EXPECT_EQ(48, data.graph[NISHIKOKUBUNJI]);
-	EXPECT_NE(40, data.graph[NISHIKOKUBUNJI]);
+	EXPECT_EQ(48, data.graph[NISHIKOKUBUNJI].time);
+	EXPECT_NE(40, data.graph[NISHIKOKUBUNJI].time);
 
 	EXPECT_EQ( 12, data.searchWithTime(MINAMIURAWA,OOMIYA));
 
